@@ -252,5 +252,34 @@ python3 -m pip install . --prefix=$INSTALL_PREFIX --root=$INSTALL_DIR --no-warn-
 
 sudo cp -rv $INSTALL_DIR/* /
 #notus-scanner
+export NOTUS_VERSION=22.4.1
+sudo apt install -y \
+  python3 \
+  python3-pip \
+  python3-setuptools \
+  python3-paho-mqtt \
+  python3-psutil \
+  python3-gnupg
+curl -f -L https://github.com/greenbone/notus-scanner/archive/refs/tags/v$NOTUS_VERSION.tar.gz -o $SOURCE_DIR/notus-scanner-$NOTUS_VERSION.tar.gz
+curl -f -L https://github.com/greenbone/notus-scanner/releases/download/v$NOTUS_VERSION/notus-scanner-$NOTUS_VERSION.tar.gz.asc -o $SOURCE_DIR/notus-scanner-$NOTUS_VERSION.tar.gz.asc
+gpg --verify $SOURCE_DIR/notus-scanner-$NOTUS_VERSION.tar.gz.asc $SOURCE_DIR/notus-scanner-$NOTUS_VERSION.tar.gz
+tar -C $SOURCE_DIR -xvzf $SOURCE_DIR/notus-scanner-$NOTUS_VERSION.tar.gz
+cd $SOURCE_DIR/notus-scanner-$NOTUS_VERSION
+
+python3 -m pip install . --prefix=$INSTALL_PREFIX --root=$INSTALL_DIR --no-warn-script-location
+
+sudo cp -rv $INSTALL_DIR/* /
 
 #gvm-tools
+sudo apt install -y \
+  python3 \
+  python3-pip \
+  python3-setuptools \
+  python3-packaging \
+  python3-lxml \
+  python3-defusedxml \
+  python3-paramiko
+python3 -m pip install --user gvm-tools
+python3 -m pip install --prefix=$INSTALL_PREFIX --root=$INSTALL_DIR --no-warn-script-location gvm-tools
+
+sudo cp -rv $INSTALL_DIR/* /
