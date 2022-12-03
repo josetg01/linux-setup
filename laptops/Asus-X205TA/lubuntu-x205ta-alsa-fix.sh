@@ -3,7 +3,7 @@
 #This script does not clean up after itself. Any files it uses or downloads in root are not deleted. Feel free to delete them after it executes.
 
 #Apply ucm fixes and disable hdmi audio
-sudo cp -rf 50-x205ta.conf /etc/modprobe.d #This disables hdmi audio. remove the blacklist from this file if you want to test if it works
+sudo cp -rf Audio/50-x205ta.conf /etc/modprobe.d #This disables hdmi audio. remove the blacklist from this file if you want to test if it works
 sudo rm -rf /usr/share/alsa/ucm/chtrt5645/{HiFi,chtrt5645}.conf
 sudo mkdir -p /usr/share/alsa/ucm/chtrt5645
 sudo wget https://raw.githubusercontent.com/harryharryharry/x205ta-iso2usb-files/master/HiFi.conf -O /usr/share/alsa/ucm/chtrt5645/HiFi.conf
