@@ -169,11 +169,88 @@ make DESTDIR=$INSTALL_DIR install
 sudo cp -rv $INSTALL_DIR/* /
 
 #openvas-smb
+sudo apt install -y \
+  gcc-mingw-w64 \
+  libgnutls28-dev \
+  libglib2.0-dev \
+  libpopt-dev \
+  libunistring-dev \
+  heimdal-dev \
+  perl-base
+curl -f -L https://github.com/greenbone/openvas-smb/archive/refs/tags/v$OPENVAS_SMB_VERSION.tar.gz -o $SOURCE_DIR/openvas-smb-$OPENVAS_SMB_VERSION.tar.gz
+curl -f -L https://github.com/greenbone/openvas-smb/releases/download/v$OPENVAS_SMB_VERSION/openvas-smb-$OPENVAS_SMB_VERSION.tar.gz.asc -o $SOURCE_DIR/openvas-smb-$OPENVAS_SMB_VERSION.tar.gz.asc
+gpg --verify $SOURCE_DIR/openvas-smb-$OPENVAS_SMB_VERSION.tar.gz.asc $SOURCE_DIR/openvas-smb-$OPENVAS_SMB_VERSION.tar.gz
+tar -C $SOURCE_DIR -xvzf $SOURCE_DIR/openvas-smb-$OPENVAS_SMB_VERSION.tar.gz
+mkdir -p $BUILD_DIR/openvas-smb && cd $BUILD_DIR/openvas-smb
+
+cmake $SOURCE_DIR/openvas-smb-$OPENVAS_SMB_VERSION \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
+  -DCMAKE_BUILD_TYPE=Release
+
+make -j$(nproc)
+make DESTDIR=$INSTALL_DIR install
+
+sudo cp -rv $INSTALL_DIR/* /
 
 #openvas-scanner
+export OPENVAS_SCANNER_VERSION=$GVM_VERSION
+sudo apt install -y \
+  bison \
+  libglib2.0-dev \
+  libgnutls28-dev \
+  libgcrypt20-dev \
+  libpcap-dev \
+  libgpgme-dev \
+  libksba-dev \
+  rsync \
+  nmap \
+  libjson-glib-dev \
+  libbsd-dev \
+  python3-impacket \
+  libsnmp-dev
+curl -f -L https://github.com/greenbone/openvas-scanner/archive/refs/tags/v$OPENVAS_SCANNER_VERSION.tar.gz -o $SOURCE_DIR/openvas-scanner-$OPENVAS_SCANNER_VERSION.tar.gz
+curl -f -L https://github.com/greenbone/openvas-scanner/releases/download/v$OPENVAS_SCANNER_VERSION/openvas-scanner-$OPENVAS_SCANNER_VERSION.tar.gz.asc -o $SOURCE_DIR/openvas-scanner-$OPENVAS_SCANNER_VERSION.tar.gz.asc
+gpg --verify $SOURCE_DIR/openvas-scanner-$OPENVAS_SCANNER_VERSION.tar.gz.asc $SOURCE_DIR/openvas-scanner-$OPENVAS_SCANNER_VERSION.tar.gz
+tar -C $SOURCE_DIR -xvzf $SOURCE_DIR/openvas-scanner-$OPENVAS_SCANNER_VERSION.tar.gz
+mkdir -p $BUILD_DIR/openvas-scanner && cd $BUILD_DIR/openvas-scanner
+
+cmake $SOURCE_DIR/openvas-scanner-$OPENVAS_SCANNER_VERSION \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DSYSCONFDIR=/etc \
+  -DLOCALSTATEDIR=/var \
+  -DOPENVAS_FEED_LOCK_PATH=/var/lib/openvas/feed-update.lock \
+  -DOPENVAS_RUN_DIR=/run/ospd
+
+make -j$(nproc)
+make DESTDIR=$INSTALL_DIR install
+
+sudo cp -rv $INSTALL_DIR/* /
 
 #ospd-openvas
+export OSPD_OPENVAS_VERSION=22.4.2
+sudo apt install -y \
+  python3 \
+  python3-pip \
+  python3-setuptools \
+  python3-packaging \
+  python3-wrapt \
+  python3-cffi \
+  python3-psutil \
+  python3-lxml \
+  python3-defusedxml \
+  python3-paramiko \
+  python3-redis \
+  python3-paho-mqtt
+curl -f -L https://github.com/greenbone/ospd-openvas/archive/refs/tags/v$OSPD_OPENVAS_VERSION.tar.gz -o $SOURCE_DIR/ospd-openvas-$OSPD_OPENVAS_VERSION.tar.gz
+curl -f -L https://github.com/greenbone/ospd-openvas/releases/download/v$OSPD_OPENVAS_VERSION/ospd-openvas-$OSPD_OPENVAS_VERSION.tar.gz.asc -o $SOURCE_DIR/ospd-openvas-$OSPD_OPENVAS_VERSION.tar.gz.asc
+gpg --verify $SOURCE_DIR/ospd-openvas-$OSPD_OPENVAS_VERSION.tar.gz.asc $SOURCE_DIR/ospd-openvas-$OSPD_OPENVAS_VERSION.tar.gz
+tar -C $SOURCE_DIR -xvzf $SOURCE_DIR/ospd-openvas-$OSPD_OPENVAS_VERSION.tar.gz
+cd $SOURCE_DIR/ospd-openvas-$OSPD_OPENVAS_VERSION
 
+python3 -m pip install . --prefix=$INSTALL_PREFIX --root=$INSTALL_DIR --no-warn-script-location
+
+sudo cp -rv $INSTALL_DIR/* /
 #notus-scanner
 
 #gvm-tools
