@@ -3,5 +3,9 @@ sudo snap remove --purge firefox
 sudo apt purge firefox -y
 sudo add-apt-repository ppa:mozillateam/ -y
 sudo touch /etc/apt/preferences.d/mozillateamppa
-sudo cat 
+sudo cat >/etc/apt/preferences.d/mozillateamppa <<EOL
+Package: firefox*
+Pin: release o=LP-PPA-mozillateam
+Pin-Priority: 501
+EOL
 sudo apt update
