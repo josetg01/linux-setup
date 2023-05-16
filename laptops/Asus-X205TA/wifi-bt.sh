@@ -1,5 +1,5 @@
 #!/bin/bash
-curl https://raw.githubusercontent.com/josetg01/linux-setup/main/setup/$(lsb_release -si)/delete-games-$(lsb_release -sr).sh | bash
+
 
 # Download firmware file and install it
 wget https://raw.githubusercontent.com/josetg01/ASUS-X205TA/master/Drivers/Inalambrico/brcmfmac43340-sdio.txt -O /lib/firmware/brcm/brcmfmac43340-sdio.txt
