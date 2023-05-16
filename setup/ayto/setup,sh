@@ -1,1 +1,5 @@
+#/bin/bash
 
+#Establecer nombre de equipo con dominio.
+numpc=1765
+cat 
