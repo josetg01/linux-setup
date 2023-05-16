@@ -1,4 +1,6 @@
 #/bin/bash
+sudo apt update && sudo apt upgrade -y
+curl https://raw.githubusercontent.com/josetg01/linux-setup/main/setup/$(lsb_release -si)/delete-games-$(lsb_release -sr).sh | bash
 
 #Establecer nombre de equipo con dominio.
 read -p "Escribe el numero del equipo: " numpc
