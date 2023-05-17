@@ -12,7 +12,7 @@ read -p "Escribe el numero del equipo: " numpc
 read -p "Escriba el dominio a utilizar: " dominio
 
 cat > /etc/hostname <<EOL
-PC$numpc
+PC$numpc.$dominio
 EOL
 
 cat > /etc/hosts <<EOL
