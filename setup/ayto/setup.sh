@@ -10,9 +10,11 @@ sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable
 #Establecer nombre de equipo con dominio.
 read -p "Escribe el numero del equipo: " numpc
 read -p "Escriba el dominio a utilizar: " dominio
+
 cat > /etc/hostname <<EOL
 PC$numpc
 EOL
+
 cat > /etc/hosts <<EOL
 127.0.0.1 localhost
 127.0.1.1 PC$numpc
