@@ -13,9 +13,6 @@ read -p "Escriba el dominio a utilizar: " dominio
 cat > /etc/hostname <<EOL
 PC$numpc
 EOL
-cat > /etc/hostname <<EOL
-PC$numpc.$dominio
-EOL
 cat > /etc/hosts <<EOL
 127.0.0.1 localhost
 127.0.1.1 PC$numpc
