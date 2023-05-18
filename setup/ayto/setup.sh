@@ -30,4 +30,4 @@ ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 EOL
 
-sudo apt install firefox-esr firefox-esr-locale-{en,es}
+sudo apt install -y firefox-esr firefox-esr-locale-{en,es} vlc openjdk-8-jre
