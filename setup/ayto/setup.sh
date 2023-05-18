@@ -7,6 +7,9 @@ sudo apt autoremove -y
 wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - 
 sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
 
+#Repositorio de Firefox
+sudo add-apt-repository ppa:mozillateam/ppa -y
+
 #Establecer nombre de equipo con dominio.
 read -p "Escribe el numero del equipo: " numpc
 read -p "Escriba el dominio a utilizar: " dominio
@@ -26,3 +29,5 @@ ff00::0 ip6-mcastprefix
 ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 EOL
+
+sudo apt install firefox-esr firefox-esr-locale-{en,es}
