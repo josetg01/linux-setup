@@ -1,4 +1,6 @@
 #/bin/bash
+sudo rm /etc/resolv.conf
+sudo ln -sf /run/systemd/resolve/resolv.conf /etc/resolv.conf
 sudo apt update && sudo apt upgrade -y
 curl https://raw.githubusercontent.com/josetg01/linux-setup/main/setup/$(lsb_release -si)/delete-games-$(lsb_release -sr).sh | bash
 sudo apt autoremove -y
