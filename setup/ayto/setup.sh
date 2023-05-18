@@ -32,4 +32,26 @@ ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 EOL
 
+#Instalacion y configurador de VNC
+sudo apt install -y x11vnc
+read -p "Escribe la contraseñar a usar para VNC: "
+cat > /lib/systemd/system/x11vnc.service <<EOL
+[Unit]
+Description=x11vnc service
+After=display-manager.service network.target syslog.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/x11vnc -forever -display :0 -auth guess -passwd password
+ExecStop=/usr/bin/killall x11vnc
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+EOL
+sudo systemctl daemon-reload
+sudo systemctl enable x11vnc.service
+sudo systemctl start x11vnc.service
+
+#Instalacion de software
 sudo apt install -y firefox-esr firefox-esr-locale-{en,es} vlc openjdk-8-jre
