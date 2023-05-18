@@ -26,5 +26,3 @@ ff00::0 ip6-mcastprefix
 ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 EOL
-
-sudo apt install -y sssd-ad sssd-tools realmd adcli
