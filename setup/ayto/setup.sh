@@ -34,7 +34,7 @@ EOL
 
 #Instalacion y configurador de VNC
 sudo apt install -y x11vnc
-read -p "Escribe la contraseñar a usar para VNC: "
+read -p "Escribe la contraseñar a usar para VNC: " vncpass
 cat > /lib/systemd/system/x11vnc.service <<EOL
 [Unit]
 Description=x11vnc service
@@ -42,7 +42,7 @@ After=display-manager.service network.target syslog.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/x11vnc -forever -display :0 -auth guess -passwd ibm1999tb
+ExecStart=/usr/bin/x11vnc -forever -display :0 -auth guess -passwd $vncpass
 ExecStop=/usr/bin/killall x11vnc
 Restart=on-failure
 
