@@ -1,6 +1,7 @@
 #/bin/bash
 read -p "Nombre de equipo: " nombrepc
 read -p "Dominio Windows: " dominio
+read -p "Usuario para unir al dominio: " userdomain
 
 #Instalacion paquetes necesarios
 sudo apt update && sudo apt upgrade -y
