@@ -9,3 +9,4 @@ apt install -y realmd libnss-sss libpam-sss sssd sssd-tools adcli samba-common-b
 
 #
 sudo hostnamectl set-hostname $nombrepc.$dominio
+sudo realm join -U $userdomain $dominio
