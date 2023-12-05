@@ -1,6 +1,7 @@
 #/bin/bash
 read -p "Nombre de equipo: " nombrepc
 read -p "Dominio Windows: " dominio
+
 #Instalacion paquetes necesarios
 sudo apt update && sudo apt upgrade -y
 apt install -y realmd libnss-sss libpam-sss sssd sssd-tools adcli samba-common-bin oddjob oddjob-mkhomedir packagekit
