@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 yay -Sy vmware-workstation
 
 # Detectar el tipo de kernel instalado
@@ -22,8 +21,8 @@ elif [ "$KERNEL_TYPE" == "lts" ]; then
     sudo pacman -S linux-lts-headers
 else
     sudo pacman -S linux-headers
-    
 fi
+
 sudo modprobe -a vmw_vmci vmmon
 sudo systemctl enable vmware-networks vmware-usbarbitrator
 sudo systemctl start vmware-networks vmware-usbarbitrator
