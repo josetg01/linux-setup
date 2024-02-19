@@ -1,6 +1,6 @@
 #!/bin/bash
 
-yay -Sy vmware-workstation
+yay -Sy --noconfirm vmware-workstation
 
 # Detectar el tipo de kernel instalado
 if pacman -Q | grep -q linux-zen; then
