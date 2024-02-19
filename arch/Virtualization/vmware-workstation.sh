@@ -2,6 +2,7 @@
 
 
 yay -Sy vmware-workstation
+
 # Detectar el tipo de kernel instalado
 if pacman -Q | grep -q linux-zen; then
     echo "Kernel Zen detectado."
