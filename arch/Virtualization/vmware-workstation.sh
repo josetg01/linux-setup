@@ -26,3 +26,4 @@ else
 fi
 sudo modprobe -a vmw_vmci vmmon
 sudo systemctl enable vmware-networks vmware-usbarbitrator
+sudo systemctl start vmware-networks vmware-usbarbitrator
