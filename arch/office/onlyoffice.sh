@@ -1,3 +1,3 @@
 #!/bin/bash
 
-yay -S
+yay -Sy --noconfirm onlyoffice-bin
