@@ -3,19 +3,19 @@
 #
 sudo pacman -Sy --noconfirm git base-devel
 
-if command -v yay &> /dev/null; then
-    echo "yay ya está instalado."
+if command -v trizen &> /dev/null; then
+    echo "trizen ya está instalado."
 else
-    echo "yay no está instalado. Iniciando la instalación..."
+    echo "trizen no está instalado. Iniciando la instalación..."
 
     # Instalar yay desde AUR
-    git clone https://aur.archlinux.org/yay.git
-    cd yay
+    git clone https://aur.archlinux.org/trizen.git
+    cd trizen
     makepkg -si
 
     # Limpiar el directorio temporal
     cd ..
-    rm -rf yay
+    sudo rm -rf trizen
 
-    echo "yay ha sido instalado correctamente."
+    echo "trizen ha sido instalado correctamente."
 fi
