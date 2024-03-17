@@ -8,7 +8,7 @@ if command -v trizen &> /dev/null; then
 else
     echo "trizen no está instalado. Iniciando la instalación..."
 
-    # Instalar yay desde AUR
+    # Instalar trizen desde AUR
     git clone https://aur.archlinux.org/trizen.git
     cd trizen
     makepkg -si
