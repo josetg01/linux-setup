@@ -1,0 +1,10 @@
+Anydesk
+Brave
+CPU-X
+VSCodium
+Oh-My-Bash
+VMWare-WorkStation
+OnlyOffice
+Veyon
+Teamviewer
+Android-Studio
