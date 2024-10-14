@@ -1,5 +1,9 @@
 #!/bin/bash
 
+#Configuracion de variables
+LDAP_CONF="/etc/ldap/ldap.conf"
+NSS_CONF="/etc/nsswitch.conf"
+
 #Instalacion paquetes cliente ldap
 sudo DEBIAN_FRONTEND=noninteractive  apt install libnss-ldap libpam-ldap ldap-utils -y
 
@@ -27,13 +31,13 @@ done
 ldap_format="${ldap_format%,}"
 
 #Editamos el fichero /etc/ldap.conf
-sed -i "s/BASE.*/BASE\t$ldap_format/"
-sed -i "s/URI.*/URI\tldap:\/\/ldap.$dominio/"
+sed -i "s/BASE.*/BASE\t$ldap_format/" $LDAP_CONF
+sed -i "s/URI.*/URI\tldap:\/\/ldap.$dominio/" $LDAP_CONF
 
 #Modificamos el fichero "/etc/nsswitch.conf"
-sed -i '/^passwd:/s/$/ ldap/'
-sed -i '/^group:/s/$/ ldap/'
-sed -i '/^shadow:/s/$/ ldap/'
+sed -i '/^passwd:/s/$/ ldap/' $NSS_CONF
+sed -i '/^group:/s/$/ ldap/' $NSS_CONF
+sed -i '/^shadow:/s/$/ ldap/' $NSS_CONF
 
 #Añadimos la linea necesaria al fichero common-session
 echo "session    optional    pam_mkhomedir.so    skel=/etc/skel   umask=077" >> /etc/pam.d/common-session
