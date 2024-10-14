@@ -29,3 +29,8 @@ ldap_format="${ldap_format%,}"
 #Editamos el fichero /etc/ldap.conf
 sed -i "s/BASE.*/BASE\t$ldap_format/"
 sed -i "s/URI.*/URI\tldap:\/\/ldap.$dominio/"
+
+#
+sed -i '/^passwd:/s/$/ ldap/'
+sed -i '/^group:/s/$/ ldap/'
+sed -i '/^shadow:/s/$/ ldap/'
