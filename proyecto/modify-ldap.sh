@@ -3,7 +3,8 @@
 # Configuración de variables
 LDAP_SERVER="ldap://locahost"
 BIND_PASSWD="alumno"
-BIND_ADMIN="cn=admin,dc=example,dc=com"
-BIND_DN="dc=example,dc=com"
+BASE_DN="dc=example,dc=com"
+BIND_ADMIN="cn=admin,$BASE_DN"
+
 
 #
