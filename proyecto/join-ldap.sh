@@ -30,7 +30,10 @@ ldap_format="${ldap_format%,}"
 sed -i "s/BASE.*/BASE\t$ldap_format/"
 sed -i "s/URI.*/URI\tldap:\/\/ldap.$dominio/"
 
-#
+#Modificamos el fichero "/etc/nsswitch.conf"
 sed -i '/^passwd:/s/$/ ldap/'
 sed -i '/^group:/s/$/ ldap/'
 sed -i '/^shadow:/s/$/ ldap/'
+
+#Añadimos la linea necesaria al fichero common-session
+echo "session    optional    pam_mkhomedir.so    skel=/etc/skel   umask=077" >> /etc/pam.d/common-session
