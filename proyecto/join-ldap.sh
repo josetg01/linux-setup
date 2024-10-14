@@ -3,6 +3,7 @@
 #Configuracion de variables
 LDAP_CONF="/etc/ldap/ldap.conf"
 NSS_CONF="/etc/nsswitch.conf"
+read -p "Introduce el dominio: " dominio
 
 #Instalacion paquetes cliente ldap
 sudo DEBIAN_FRONTEND=noninteractive  apt install libnss-ldap libpam-ldap ldap-utils -y
@@ -30,9 +31,16 @@ done
 # Elimina la última coma
 ldap_format="${ldap_format%,}"
 
-#Editamos el fichero /etc/ldap.conf
+#Editamos el fichero /etc/ldap/ldap.conf
 sed -i "s/BASE.*/BASE\t$ldap_format/" $LDAP_CONF
 sed -i "s/URI.*/URI\tldap:\/\/ldap.$dominio/" $LDAP_CONF
+
+# editamos el fichero /etc/ldap.conf
+cat >> /etc/ldap.conf <<EOL
+base $ldap_format
+uri ldap://ldap.$dominio/
+rootbinddn cn=admin,$dominio
+EOL
 
 #Modificamos el fichero "/etc/nsswitch.conf"
 sed -i '/^passwd:/s/$/ ldap/' $NSS_CONF
