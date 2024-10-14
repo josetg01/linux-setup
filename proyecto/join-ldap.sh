@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#Instalacion paquetes cliente ldap
+sudo apt install libnss-ldap libpam-ldap ldap-utils -y
+
 # Verifica que se ha pasado un argumento
 if [ "$#" -ne 1 ]; then
     echo "Uso: $0 dominio"
