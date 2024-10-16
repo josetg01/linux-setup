@@ -1,13 +1,15 @@
 #!/bin/bash
 read -p "Introduce el dominio: " dominio
 read -p "Introduce el usuario root de LDAP: " BIND_DN_ROOT
-
+read -p "IP del servidor ldap: " IP_LDAP
 #Configuracion de variables
 LDAP_CONF="/etc/ldap/ldap.conf"
 NSS_CONF="/etc/nsswitch.conf"
 LDAP_CONF2="/etc/ldap.conf"
-LDAP_SERVER="ldap://"
 
+cat >> /etc/hosts <<EOL
+$IP_LDAP    ldap.$dominio
+EOL
 #Instalacion paquetes cliente ldap
 sudo DEBIAN_FRONTEND=noninteractive  apt install libnss-ldap libpam-ldap ldap-utils -y
 
