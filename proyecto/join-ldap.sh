@@ -1,9 +1,12 @@
 #!/bin/bash
+read -p "Introduce el dominio: " dominio
+read -p "Introduce el usuario root de LDAP: " BIND_DN_ROOT
 
 #Configuracion de variables
 LDAP_CONF="/etc/ldap/ldap.conf"
 NSS_CONF="/etc/nsswitch.conf"
-read -p "Introduce el dominio: " dominio
+LDAP_CONF2="/etc/ldap.conf"
+LDAP_SERVER="ldap://"
 
 #Instalacion paquetes cliente ldap
 sudo DEBIAN_FRONTEND=noninteractive  apt install libnss-ldap libpam-ldap ldap-utils -y
@@ -36,11 +39,10 @@ sed -i "s/BASE.*/BASE\t$ldap_format/" $LDAP_CONF
 sed -i "s/URI.*/URI\tldap:\/\/ldap.$dominio/" $LDAP_CONF
 
 # editamos el fichero /etc/ldap.conf
-cat >> /etc/ldap.conf <<EOL
-base $ldap_format
-uri ldap://ldap.$dominio/
-rootbinddn cn=admin,$dominio
-EOL
+sed -i "s/base.*/base $ldap_format/" $LDAP_CONF2
+sed -i "s/uri.*/uri ldap:\/\/ldap.$dominio/" $LDAP_CONF2
+sed -i "s/rootbinddn.*/rootbinddn cn=$BIND_DN_ROOT,$ldap_format/" $LDAP_CONF2
+
 
 #Modificamos el fichero "/etc/nsswitch.conf"
 sed -i '/^passwd:/s/$/ ldap/' $NSS_CONF
