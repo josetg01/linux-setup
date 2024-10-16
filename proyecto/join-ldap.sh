@@ -1,4 +1,5 @@
 #!/bin/bash
+
 #Configuracion de variables
 read -p "Introduce el dominio: " dominio
 read -p "Introduce el usuario root de LDAP: " BIND_DN_ROOT
