@@ -11,6 +11,7 @@ LDAP_CONF2="/etc/ldap.conf"
 cat >> /etc/hosts <<EOL
 $IP_LDAP    ldap.$dominio
 EOL
+
 #Instalacion paquetes cliente ldap
 sudo DEBIAN_FRONTEND=noninteractive  apt install libnss-ldap libpam-ldap ldap-utils -y
 
