@@ -1,8 +1,9 @@
 #!/bin/bash
+#Configuracion de variables
 read -p "Introduce el dominio: " dominio
 read -p "Introduce el usuario root de LDAP: " BIND_DN_ROOT
 read -p "IP del servidor ldap: " IP_LDAP
-#Configuracion de variables
+
 LDAP_CONF="/etc/ldap/ldap.conf"
 NSS_CONF="/etc/nsswitch.conf"
 LDAP_CONF2="/etc/ldap.conf"
