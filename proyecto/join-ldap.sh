@@ -20,9 +20,6 @@ if [ "$#" -ne 1 ]; then
     exit 1
 fi
 
-# Lee el dominio
-dominio="$1"
-
 # Divide el dominio en partes utilizando el punto como delimitador
 IFS='.' read -r -a partes <<< "$dominio"
 
