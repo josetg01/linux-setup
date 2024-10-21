@@ -22,7 +22,7 @@ añadir_objecto(){
   esac
 }
 añadir_usuario(){
-  read -p "Nombre de usuario: " user
+  read -p "\nNombre de usuario: " user
   read -p "Nombre: " nombre
   read -p "Apellidos: " apellidos
   read -sp "Contraseña: " password
@@ -33,8 +33,9 @@ añadir_usuario(){
   echo "La contraseña del usuario es: $password"
   exit 0
 }
-añadir_objecto
 añadir_grupo(){
-
+  read -p "Nombre de grupo: " nomgroup
+  read -p ""
 }
 añadir_uo(){}
+añadir_objecto
