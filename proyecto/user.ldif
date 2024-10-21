@@ -1,0 +1,21 @@
+dn: uid=jtorregros,ou=Users,dc=josemaria1,dc=local
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: jtorregros
+sn: Torregrosa
+givenName: Jose Maria
+cn: Jose Maria Torregrosa
+displayName: Jose Maria Torregrosa
+uidNumber: 1000
+gidNumber: 10002
+userPassword: jose2001
+gecos: Jose Maria Torregrosa
+loginShell: /bin/bash
+homeDirectory: /home/jmtorregros
+    shadowMax: 999999
+    shadowLastChange: 10877
+    mail: jmtorregros@josemaria1.local
+    postalCode: 30562
+    o: servidor
+    initials: JMTG
