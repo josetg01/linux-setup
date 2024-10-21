@@ -8,7 +8,7 @@ BIND_PASSWD="alumno"
 DOMAIN="josemaria1.local"
 
 #
-añadir_objecto(){
+añadir_objeto(){
   echo "1) Añadir Usuario"
   echo "2) Añadir grupo"
   echo "3) Añadir unidad organizativa"
@@ -47,4 +47,4 @@ añadir_uo(){
   sudo ldapadd -x -D cn=admin,$BASE_DN -w $BIND_PASSWD -f /tmp/uo.ldiff
   exit
 }
-añadir_objecto
+añadir_objeto
