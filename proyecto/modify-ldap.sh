@@ -46,7 +46,6 @@ añadir_usuario(){
   echo "El apellido es: $apellidos"
   echo "El nombre completo es: $nombre $apellidos"
   echo "La contraseña del usuario es: $password"
-  exit 0
 }
 calc_gid() {
   # Obtener el GID máximo actual
