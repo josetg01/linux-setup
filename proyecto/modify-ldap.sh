@@ -21,7 +21,6 @@ menu_inicio(){
     3) eliminar_objeto;;
     *) echo "Opción incorrecta";;
   esac
-
 }
 #Funciones de añadir Objetos
 añadir_objeto(){
