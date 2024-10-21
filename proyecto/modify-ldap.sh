@@ -47,6 +47,7 @@ añadir_uo(){
   objectClass: organizationalUnit
   ou: $nomuo
   EOL
+  cat /tmp/uo.ldiff
   exit
 }
 añadir_objecto
