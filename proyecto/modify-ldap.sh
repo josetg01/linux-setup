@@ -16,8 +16,8 @@ añadir_objecto(){
 
   case $n in
     1) añadir_usuario;;
-    2) añadir_grupo
-    3) añadir_uo
+    2) añadir_grupo;;
+    3) añadir_uo;;
     *) echo "Opción incorrecta";;
   esac
 }
