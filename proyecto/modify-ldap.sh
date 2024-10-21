@@ -36,16 +36,29 @@ añadir_objeto(){
     *) echo "Opción incorrecta";;
   esac
 }
+calc_uid(){
+  #Obtener el GID máximo actual
+  max_uid=$(ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$BASE_DN" "(objectClass=inetOrgPerson)" uidNumber | grep uidNumber | awk '{print $2}' | sort -n | tail -n 1)
+  # Si no hay GIDs, empezar desde 1000 (ajusta esto si es necesario)
+  if [ -z "$max_uid" ]; then
+    new_uid=1000
+  else
+    new_uid=$((max_uid + 1))
+  fi
+  echo $new_uid
+}
 añadir_usuario(){
   read -p "\nNombre de usuario: " user
   read -p "Nombre: " nombre
   read -p "Apellidos: " apellidos
   read -sp "Contraseña: " password
+  new_uid=$(calc_uid)
   echo "El nombre de usuario elegido es: $user"
   echo "El nombre es: $nombre"
   echo "El apellido es: $apellidos"
   echo "El nombre completo es: $nombre $apellidos"
   echo "La contraseña del usuario es: $password"
+  echo "El nuevo uid es: $new_uid"
 }
 calc_gid() {
   # Obtener el GID máximo actual
