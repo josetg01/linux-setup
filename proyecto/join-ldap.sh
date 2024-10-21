@@ -47,3 +47,5 @@ sed -i '/^shadow:/s/$/ ldap/' $NSS_CONF
 
 #Añadimos la linea necesaria al fichero common-session
 echo "session    optional    pam_mkhomedir.so    skel=/etc/skel   umask=077" >> /etc/pam.d/common-session
+
+echo "A continuacion debes reiniciar el equipo."
