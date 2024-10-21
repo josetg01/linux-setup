@@ -9,7 +9,17 @@ DOMAIN="josemaria1.local"
 
 #
 añadir_objecto(){
-  
+  echo "1) Añadir Usuario"
+  echo "2) Añadir grupo"
+  echo "3) Añadir unidad organizativa"
+  read -p "Selecione una opcion [1-3]: " n
+
+  case $n in
+    1) añadir_usuario;;
+    2) añadir_grupo
+    3) añadir_uo
+    *) echo "Opción incorrecta";;
+  esac
 }
 añadir_usuario(){
   read -p "Nombre de usuario: " user
