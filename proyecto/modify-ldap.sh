@@ -49,8 +49,6 @@ calc_gid() {
 añadir_grupo(){
   read -p "Nombre de grupo: " nomgroup
   new_gid=$(calc_gid)
-  echo "El nombre del grupo es: $nomgroup"
-  echo "El nuevo GID será: $new_gid"
   
   # Aquí puedes agregar el comando ldapadd para crear el grupo
   echo "dn: cn=$nomgroup,$DN_GROUPS" > /tmp/grupo.ldiff
