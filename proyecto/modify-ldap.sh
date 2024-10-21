@@ -35,7 +35,8 @@ añadir_usuario(){
 }
 añadir_grupo(){
   read -p "Nombre de grupo: " nomgroup
-  read -p ""
+  echo "El nombre del grupo es: $nomgroup"
+  
 }
 añadir_uo(){}
 añadir_objecto
