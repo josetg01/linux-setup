@@ -9,7 +9,7 @@ DOMAIN="josemaria1.local"
 DN_GROUPS="ou=Groups,$BASE_DN"
 DN_USERS="ou=Users,$BASE_DN"
 
-#
+#Funciones de añadir Objetos
 añadir_objeto(){
   echo "1) Añadir Usuario"
   echo "2) Añadir grupo"
@@ -58,7 +58,6 @@ añadir_grupo(){
   sudo ldapadd -x -D cn=admin,$BASE_DN -w $BIND_PASSWD -f /tmp/grupo.ldiff
   rm -f /tmp/grupo.ldiff
 }
-
 añadir_uo(){
   read -p "Nombre de la unidad Organizativa: " nomuo
   echo "dn: ou=$nomuo,$BASE_DN" > /tmp/uo.ldiff
