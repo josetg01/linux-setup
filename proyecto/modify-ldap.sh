@@ -41,11 +41,9 @@ añadir_grupo(){
 }
 añadir_uo(){
   read -p "Nombre de la unidad Organizativa: " nomuo
-  cat > /tmp/uo.ldiff <<EOL
-  dn: ou=$nomuo,$BASE_DN
-  objectClass: organizationalUnit
-  ou: $nomuo
-  EOL
+  echo "dn: ou=$nomuo,$BASE_DN" > /tmp/uo.ldiff
+  echo "objectClass: organizationalUnit" >> /tmp/uo.ldiff
+  echo "ou: $nomuo" >> /tmp/uo.ldiff
   cat /tmp/uo.ldiff
   exit
 }
