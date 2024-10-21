@@ -21,6 +21,7 @@ añadir_objecto(){
     *) echo "Opción incorrecta";;
   esac
 }
+calc_numuid(){}
 añadir_usuario(){
   read -p "\nNombre de usuario: " user
   read -p "Nombre: " nombre
@@ -33,10 +34,19 @@ añadir_usuario(){
   echo "La contraseña del usuario es: $password"
   exit 0
 }
+calc_gid(){}
 añadir_grupo(){
   read -p "Nombre de grupo: " nomgroup
   echo "El nombre del grupo es: $nomgroup"
-  
+  exit
 }
-añadir_uo(){}
+añadir_uo(){
+  read -p "Nombre de la unidad Organizativa: " nomuo
+  cat > /tmp/uo.ldiff <<EOL
+  dn: ou=$nomuo,$BASE_DN
+  objectClass: organizationalUnit
+  ou: $nomuo
+  EOL
+  exit
+}
 añadir_objecto
