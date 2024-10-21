@@ -6,6 +6,8 @@ BASE_DN="dc=josemaria1,dc=local"
 BIND_DN="cn=admin,$BASE_DN"
 BIND_PASSWD="alumno"
 DOMAIN="josemaria1.local"
+DN_GROUPS="ou=Groups,$BASE_DN"
+DN_USERS="ou=Users,$BASE_DN"
 
 #
 añadir_objeto(){
@@ -55,6 +57,14 @@ añadir_grupo(){
   new_gid=$(calc_gid)
   echo "El nombre del grupo es: $nomgroup"
   echo "El nuevo GID será: $new_gid"
+  
+  # Aquí puedes agregar el comando ldapadd para crear el grupo
+  echo "dn: cn=$nomgroup,$DN_GROUPS" > /tmp/grupo.ldiff
+  echo "objectClass: posixGroup" >> /tmp/grupo.ldiff
+  echo "cn: $nomgroup" >> /tmp/grupo.ldiff
+  echo "gidNumber: $new_gid" >> /tmp/grupo.ldiff
+  sudo ldapadd -x -D cn=admin,$BASE_DN -w $BIND_PASSWD -f /tmp/grupo.ldiff
+  rm -f /tmp/grupo.ldiff
 }
 
 añadir_uo(){
