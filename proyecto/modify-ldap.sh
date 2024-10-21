@@ -9,6 +9,20 @@ DOMAIN="josemaria1.local"
 DN_GROUPS="ou=Groups,$BASE_DN"
 DN_USERS="ou=Users,$BASE_DN"
 
+menu_inicio(){
+  echo "1) Añadir objeto"
+  echo "2) Añadir grupo"
+  echo "3) Añadir unidad organizativa"
+  read -p "Selecione una opcion [1-3]: " n
+
+  case $n in
+    1) añadir_objeto;;
+    2) añadir_grupo;;
+    3) añadir_uo;;
+    *) echo "Opción incorrecta";;
+  esac
+
+}
 #Funciones de añadir Objetos
 añadir_objeto(){
   echo "1) Añadir Usuario"
@@ -51,19 +65,19 @@ añadir_grupo(){
   new_gid=$(calc_gid)
   
   # Aquí puedes agregar el comando ldapadd para crear el grupo
-  echo "dn: cn=$nomgroup,$DN_GROUPS" > /tmp/grupo.ldiff
-  echo "objectClass: posixGroup" >> /tmp/grupo.ldiff
-  echo "cn: $nomgroup" >> /tmp/grupo.ldiff
-  echo "gidNumber: $new_gid" >> /tmp/grupo.ldiff
-  sudo ldapadd -x -D cn=admin,$BASE_DN -w $BIND_PASSWD -f /tmp/grupo.ldiff
-  rm -f /tmp/grupo.ldiff
+  echo "dn: cn=$nomgroup,$DN_GROUPS" > /tmp/grupo.ldif
+  echo "objectClass: posixGroup" >> /tmp/grupo.ldif
+  echo "cn: $nomgroup" >> /tmp/grupo.ldif
+  echo "gidNumber: $new_gid" >> /tmp/grupo.ldif
+  sudo ldapadd -x -D cn=admin,$BASE_DN -w $BIND_PASSWD -f /tmp/grupo.ldif
+  rm -f /tmp/grupo.ldif
 }
 añadir_uo(){
   read -p "Nombre de la unidad Organizativa: " nomuo
-  echo "dn: ou=$nomuo,$BASE_DN" > /tmp/uo.ldiff
-  echo "objectClass: organizationalUnit" >> /tmp/uo.ldiff
-  echo "ou: $nomuo" >> /tmp/uo.ldiff
-  sudo ldapadd -x -D cn=admin,$BASE_DN -w $BIND_PASSWD -f /tmp/uo.ldiff
+  echo "dn: ou=$nomuo,$BASE_DN" > /tmp/uo.ldif
+  echo "objectClass: organizationalUnit" >> /tmp/uo.ldif
+  echo "ou: $nomuo" >> /tmp/uo.ldif
+  sudo ldapadd -x -D cn=admin,$BASE_DN -w $BIND_PASSWD -f /tmp/uo.ldif
   rm -f /tmp/uo.ldiff
   exit
 }
