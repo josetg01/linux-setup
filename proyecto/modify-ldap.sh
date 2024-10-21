@@ -37,19 +37,13 @@ añadir_usuario(){
 }
 calc_gid() {
   # Obtener el GID máximo actual
-  echo "Consultando GID máximos en LDAP..."
   max_gid=$(ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$BASE_DN" "(objectClass=posixGroup)" gidNumber | grep gidNumber | awk '{print $2}' | sort -n | tail -n 1)
-
-  echo "GID máximo encontrado: $max_gid"
-
   # Si no hay GIDs, empezar desde 1000 (ajusta esto si es necesario)
   if [ -z "$max_gid" ]; then
     new_gid=1000
   else
     new_gid=$((max_gid + 1))
   fi
-
-  echo "Nuevo GID calculado: $new_gid"
   echo $new_gid
 }
 añadir_grupo(){
