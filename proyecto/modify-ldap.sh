@@ -57,6 +57,7 @@ añadir_uo(){
   echo "objectClass: organizationalUnit" >> /tmp/uo.ldiff
   echo "ou: $nomuo" >> /tmp/uo.ldiff
   sudo ldapadd -x -D cn=admin,$BASE_DN -w $BIND_PASSWD -f /tmp/uo.ldiff
+  rm -f /tmp/uo.ldiff
   exit
 }
 añadir_objeto
