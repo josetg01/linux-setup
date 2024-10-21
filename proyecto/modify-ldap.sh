@@ -29,9 +29,11 @@ añadir_usuario(){
   echo "El nombre de usuario elegido es: $user"
   echo "El nombre es: $nombre"
   echo "El apellido es: $apellidos"
-  echo "El nombre completo es: $nombre apellidos"
+  echo "El nombre completo es: $nombre $apellidos"
   echo "La contraseña del usuario es: $password"
   
 }
-añadir_grupo(){}
+añadir_grupo(){
+
+}
 añadir_uo(){}
