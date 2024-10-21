@@ -21,7 +21,6 @@ añadir_objecto(){
     *) echo "Opción incorrecta";;
   esac
 }
-calc_numuid(){}
 añadir_usuario(){
   read -p "\nNombre de usuario: " user
   read -p "Nombre: " nombre
