@@ -11,14 +11,14 @@ DN_USERS="ou=Users,$BASE_DN"
 
 menu_inicio(){
   echo "1) Añadir objeto"
-  echo "2) Añadir grupo"
-  echo "3) Añadir unidad organizativa"
+  echo "2) Modificar objeto"
+  echo "3) Eliminar objeto"
   read -p "Selecione una opcion [1-3]: " n
 
   case $n in
     1) añadir_objeto;;
-    2) añadir_grupo;;
-    3) añadir_uo;;
+    2) modificar_objeto;;
+    3) eliminar_objeto;;
     *) echo "Opción incorrecta";;
   esac
 
