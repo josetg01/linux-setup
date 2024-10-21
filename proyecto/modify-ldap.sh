@@ -33,6 +33,7 @@ añadir_usuario(){
   echo "La contraseña del usuario es: $password"
   
 }
+añadir_objecto
 añadir_grupo(){
 
 }
