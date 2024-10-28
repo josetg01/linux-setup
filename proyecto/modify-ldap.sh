@@ -87,7 +87,9 @@ añadir_usuario(){
   echo "    postalCode: $postal_code" >> /tmp/user.ldif
   echo "    o: servidor" >> /tmp/user.ldif
   echo "    initials: $initials" >> /tmp/user.ldif
-  sudo ldapadd -x -D cn=admin,$BASE_DN -w $BIND_PASSWD -f /tmp/user.ldif
+  if ! sudo ldapadd -x -D cn=admin,$BASE_DN -w $BIND_PASSWD -f /tmp/user.ldif; then
+    echo "Error al añadir el usuario."
+  fi
   rm -f /tmp/user.ldif
 }
 calc_gid() {
