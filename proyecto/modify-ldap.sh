@@ -149,4 +149,71 @@ modificar_objeto(){
     *) echo "Opción incorrecta"; modificar_objeto;;
   esac
 }
+modificar_usuario() {
+  echo "Usuarios existentes:"
+  ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$DN_USERS" "(objectClass=inetOrgPerson)" uid | \
+    awk '/^uid: /{printf "%s\t", $2} /^cn: /{print $2}' | nl
+
+  read -p "Selecciona el número del usuario a modificar: " user_num
+  user_dn=$(ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$DN_USERS" "(objectClass=inetOrgPerson)" uid | \
+    awk -v num="$user_num" '/^uid: /{count++} count==num {print "uid="$2","$1}' | sed "s/^/uid=/" | sed "s/^uid=//")
+
+  if [ -z "$user_dn" ]; then
+    echo "Usuario no encontrado."
+    return
+  fi
+
+  # Obtener el sn y givenName actuales
+  current_sn=$(ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$DN_USERS" "$user_dn" sn | grep "^sn: " | awk '{print $2}')
+  current_givenName=$(ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$DN_USERS" "$user_dn" givenName | grep "^givenName: " | awk '{print $2}')
+
+  echo "Introduce los nuevos valores (deja en blanco para no modificar):"
+  read -p "Nombre (givenName) [actual: $current_givenName]: " new_givenName
+  read -p "Apellidos (sn) [actual: $current_sn]: " new_sn
+  read -p "Correo (mail): " new_mail
+  read -p "Código Postal (postalCode): " new_postalCode
+
+  # Crear el archivo LDIF para la modificación
+  echo "dn: $user_dn" > /tmp/modificar_user.ldif
+  echo "changetype: modify" >> /tmp/modificar_user.ldif
+
+  if [ -n "$new_givenName" ]; then
+    echo "replace: givenName" >> /tmp/modificar_user.ldif
+    echo "$new_givenName" >> /tmp/modificar_user.ldif
+  fi
+
+  if [ -n "$new_sn" ]; then
+    echo "replace: sn" >> /tmp/modificar_user.ldif
+    echo "$new_sn" >> /tmp/modificar_user.ldif
+  fi
+
+  # Modificar cn y gecos si se cambian givenName o sn
+  if [ -n "$new_givenName" ] || [ -n "$new_sn" ]; then
+    new_cn="${new_givenName:-$current_givenName} ${new_sn:-$current_sn}"
+    echo "replace: cn" >> /tmp/modificar_user.ldif
+    echo "$new_cn" >> /tmp/modificar_user.ldif
+    echo "replace: gecos" >> /tmp/modificar_user.ldif
+    echo "$new_cn" >> /tmp/modificar_user.ldif
+  fi
+
+  if [ -n "$new_mail" ]; then
+    echo "replace: mail" >> /tmp/modificar_user.ldif
+    echo "$new_mail" >> /tmp/modificar_user.ldif
+  fi
+
+  if [ -n "$new_postalCode" ]; then
+    echo "replace: postalCode" >> /tmp/modificar_user.ldif
+    echo "$new_postalCode" >> /tmp/modificar_user.ldif
+  fi
+
+  # Ejecutar la modificación
+  if ! sudo ldapmodify -x -D "$BIND_DN" -w "$BIND_PASSWD" -f /tmp/modificar_user.ldif; then
+    echo "Error al modificar el usuario."
+  else
+    echo "Usuario modificado con éxito."
+  fi
+
+  rm -f /tmp/modificar_user.ldif
+}
+
 menu_inicio
