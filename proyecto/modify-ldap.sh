@@ -33,7 +33,7 @@ añadir_objeto(){
     1) añadir_usuario;;
     2) añadir_grupo;;
     3) añadir_uo;;
-    *) echo "Opción incorrecta";;
+    *) echo "Opción incorrecta"; añadir_objeto;
   esac
 }
 calc_uid(){
@@ -136,7 +136,7 @@ modificar_objeto(){
   case $n in
     1) modificar_usuario;;
     2) modificar_grupo;;
-    *) echo "Opción incorrecta";;
+    *) echo "Opción incorrecta"; modificar_objeto;;
   esac
 }
 añadir_objeto
