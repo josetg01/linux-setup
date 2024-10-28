@@ -63,9 +63,14 @@ añadir_usuario(){
   echo "objectClass: posixAccount" >> /tmp/user.ldif
   echo "objectClass: shadowAccount" >> /tmp/user.ldif
   echo "uid: $user" >> /tmp/user.ldif
-  echo "cn: $apellidos" >> /tmp/user.ldif
+  echo "sn: $apellidos" >> /tmp/user.ldif
   echo "givenName: $nombre" >> /tmp/user.ldif
-  echo "" >> /tmp/user.ldif
+  echo "cn: $nombre $apellidos" >> /tmp/user.ldif
+  echo "uidNumber: $new_uid" >> /tmp/user.ldif
+  echo "gidNumber: " >> /tmp/user.ldif
+  echo "userPassword: $password" >> /tmp/user.ldif
+  echo "loginShell: /bin/bash" >> /tmp/user.ldif
+  echo "homeDirectory: /home/$user" >> /tmp/user.ldif
   echo "" >> /tmp/user.ldif
   echo "" >> /tmp/user.ldif
 }
