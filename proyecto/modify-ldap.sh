@@ -53,11 +53,6 @@ añadir_usuario(){
   read -p "Apellidos: " apellidos
   read -sp "Contraseña: " password
   new_uid=$(calc_uid)
-  echo "El nombre es: $nombre"
-  echo "El apellido es: $apellidos"
-  echo "El nombre completo es: $nombre $apellidos"
-  echo "La contraseña del usuario es: $password"
-  echo "El nuevo uid es: $new_uid"
   echo "dn: uid=$user,$DN_USERS" > /tmp/user.ldif
   echo "objectClass: inetOrgPerson" >> /tmp/user.ldif
   echo "objectClass: posixAccount" >> /tmp/user.ldif
