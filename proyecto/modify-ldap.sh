@@ -126,4 +126,17 @@ añadir_uo(){
   rm -f /tmp/uo.ldif
   exit
 }
+
+#Funciones de modificar usuarios y grupos
+modificar_objeto(){
+  echo "1) Modificar Usuario"
+  echo "2) Modificar grupo"
+  read -p "Selecione una opcion [1-2]: " n
+
+  case $n in
+    1) añadir_usuario;;
+    2) añadir_grupo;;
+    *) echo "Opción incorrecta";;
+  esac
+}
 añadir_objeto
