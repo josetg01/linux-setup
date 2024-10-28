@@ -81,12 +81,12 @@ añadir_usuario(){
   echo "userPassword: $password" >> /tmp/user.ldif
   echo "loginShell: /bin/bash" >> /tmp/user.ldif
   echo "homeDirectory: /home/$user" >> /tmp/user.ldif
-  echo "    shadowMax: 999999" >> /tmp/user.ldif
-  echo "    shadowLastChange: 10877" >> /tmp/user.ldif
-  echo "    mail: $user@$DOMAIN" >> /tmp/user.ldif
-  echo "    postalCode: $postal_code" >> /tmp/user.ldif
-  echo "    o: servidor" >> /tmp/user.ldif
-  echo "    initials: $initials" >> /tmp/user.ldif
+  echo "shadowMax: 999999" >> /tmp/user.ldif
+  echo "shadowLastChange: 10877" >> /tmp/user.ldif
+  echo "mail: $user@$DOMAIN" >> /tmp/user.ldif
+  echo "postalCode: $postal_code" >> /tmp/user.ldif
+  echo "o: servidor" >> /tmp/user.ldif
+  echo "initials: $initials" >> /tmp/user.ldif
   if ! sudo ldapadd -x -D "$BIND_DN" -w "$BIND_PASSWD" -f /tmp/user.ldif; then
     echo "Error al añadir el usuario."
   else
