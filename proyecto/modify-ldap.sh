@@ -53,12 +53,18 @@ calc_initials(){
   # Usar 'awk' para extraer la primera letra de cada palabra
   echo "$fullname" | awk '{ for(i=1; i<=NF; i++) printf substr($i,1,1); }'
 }
-
+listar_grupos() {
+  echo "Grupos existentes:"
+  ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$DN_GROUPS" "(objectClass=posixGroup)" cn gidNumber | awk '/^cn: /{printf "%s\t", $2} /^gidNumber: /{print $2}'
+}
 añadir_usuario(){
   read -p "\nNombre de usuario: " user
   read -p "Nombre: " nombre
   read -p "Apellidos: " apellidos
   read -p "Introduce el codigo postal: " postal_code
+  echo "Selecciona un grupo para obtener el gidNumber:"
+  listar_grupos
+  read -p "Ingresa el gidNumber del grupo: " gidNumber
   read -sp "Contraseña: " password
   new_uid=$(calc_uid)
   initials=$(calc_initials "$nombre $apellidos")
@@ -71,7 +77,7 @@ añadir_usuario(){
   echo "givenName: $nombre" >> /tmp/user.ldif
   echo "cn: $nombre $apellidos" >> /tmp/user.ldif
   echo "uidNumber: $new_uid" >> /tmp/user.ldif
-  echo "gidNumber: " >> /tmp/user.ldif
+  echo "gidNumber: $gidNumber" >> /tmp/user.ldif
   echo "userPassword: $password" >> /tmp/user.ldif
   echo "loginShell: /bin/bash" >> /tmp/user.ldif
   echo "homeDirectory: /home/$user" >> /tmp/user.ldif
