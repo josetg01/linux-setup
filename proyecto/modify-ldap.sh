@@ -47,12 +47,20 @@ calc_uid(){
   fi
   echo $new_uid
 }
+calc_initials(){
+  # Tomar la cadena de entrada
+  fullname="$1"
+  # Usar 'awk' para extraer la primera letra de cada palabra
+  echo "$fullname" | awk '{ for(i=1; i<=NF; i++) printf substr($i,1,1); }'
+}
 añadir_usuario(){
   read -p "\nNombre de usuario: " user
   read -p "Nombre: " nombre
   read -p "Apellidos: " apellidos
+  read -p "Introduce el codigo postal: " postal_code
   read -sp "Contraseña: " password
   new_uid=$(calc_uid)
+  initials=$(calc_initials "$nombre $apellidos")
   echo "dn: uid=$user,$DN_USERS" > /tmp/user.ldif
   echo "objectClass: inetOrgPerson" >> /tmp/user.ldif
   echo "objectClass: posixAccount" >> /tmp/user.ldif
@@ -66,7 +74,12 @@ añadir_usuario(){
   echo "userPassword: $password" >> /tmp/user.ldif
   echo "loginShell: /bin/bash" >> /tmp/user.ldif
   echo "homeDirectory: /home/$user" >> /tmp/user.ldif
-  echo "" >> /tmp/user.ldif
+  echo "    shadowMax: 999999" >> /tmp/user.ldif
+  echo "    shadowLastChange: 10877" >> /tmp/user.ldif
+  echo "    mail: $user@$DOMAIN" >> /tmp/user.ldif
+  echo "    postalCode: $postal_code" >> /tmp/user.ldif
+  echo "    o: servidor" >> /tmp/user.ldif
+  echo "    initials: $initials" >> /tmp/user.ldif
   echo "" >> /tmp/user.ldif
 }
 calc_gid() {
