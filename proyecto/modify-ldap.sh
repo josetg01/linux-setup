@@ -88,6 +88,7 @@ añadir_usuario(){
   echo "uidNumber: $new_uid" >> /tmp/user.ldif
   echo "gidNumber: $gidNumber" >> /tmp/user.ldif
   echo "userPassword: $password" >> /tmp/user.ldif
+  echo "gecos: $nombre $apellidos" >> /tmp/user.ldif
   echo "loginShell: /bin/bash" >> /tmp/user.ldif
   echo "homeDirectory: /home/$user" >> /tmp/user.ldif
   echo "shadowMax: 999999" >> /tmp/user.ldif
