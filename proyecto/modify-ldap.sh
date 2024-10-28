@@ -80,7 +80,6 @@ añadir_usuario(){
   echo "    postalCode: $postal_code" >> /tmp/user.ldif
   echo "    o: servidor" >> /tmp/user.ldif
   echo "    initials: $initials" >> /tmp/user.ldif
-  echo "" >> /tmp/user.ldif
 }
 calc_gid() {
   # Obtener el GID máximo actual
