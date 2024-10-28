@@ -58,7 +58,7 @@ listar_grupos() {
   ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$DN_GROUPS" "(objectClass=posixGroup)" cn gidNumber | awk '/^cn: /{printf "%s\t", $2} /^gidNumber: /{print $2}'
 }
 añadir_usuario(){
-  read -p "\nNombre de usuario: " user
+  read -p "Nombre de usuario: " user
   read -p "Nombre: " nombre
   read -p "Apellidos: " apellidos
   read -p "Introduce el codigo postal: " postal_code
@@ -87,8 +87,10 @@ añadir_usuario(){
   echo "    postalCode: $postal_code" >> /tmp/user.ldif
   echo "    o: servidor" >> /tmp/user.ldif
   echo "    initials: $initials" >> /tmp/user.ldif
-  if ! sudo ldapadd -x -D $BIND_DN -w $BIND_PASSWD -f /tmp/user.ldif; then
+  if ! sudo ldapadd -x -D "$BIND_DN" -w "$BIND_PASSWD" -f /tmp/user.ldif; then
     echo "Error al añadir el usuario."
+  else
+    echo "Usuario $user añadido con éxito."
   fi
   rm -f /tmp/user.ldif
 }
