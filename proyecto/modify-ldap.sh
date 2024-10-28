@@ -53,47 +53,13 @@ calc_initials(){
   # Usar 'awk' para extraer la primera letra de cada palabra
   echo "$fullname" | awk '{ for(i=1; i<=NF; i++) printf substr($i,1,1); }'
 }
-# Función para obtener grupos
-obtener_grupos() {
-    ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$BASE_DN" "(objectClass=posixGroup)" cn gidNumber | \
-    awk '/^cn: / {print $2} /^gidNumber: / {print $2}' | \
-    paste -d ' ' - - | \
-    awk '{print NR, $0}'
-}
 
-# Mostrar grupos y obtener la selección
-mostrar_menu_grupos() {
-    grupos=$(obtener_grupos)
-
-    if [ -z "$grupos" ]; then
-        echo "No se encontraron grupos."
-        exit 1
-    fi
-
-    echo "Selecciona un grupo:"
-    echo "$grupos"
-
-    while true; do
-        read -p "Introduce el número del grupo: " seleccion
-        
-        # Verificar si la selección es válida
-        if [[ "$seleccion" =~ ^[0-9]+$ ]] && [ "$seleccion" -ge 1 ] && [ "$seleccion" -le $(echo "$grupos" | wc -l) ]; then
-            gidNumber=$(echo "$grupos" | sed -n "${seleccion}p" | awk '{print $2}')
-            grupo=$(echo "$grupos" | sed -n "${seleccion}p" | awk '{print $1}')
-            echo "$gidNumber"
-            break
-        else
-            echo "Selección inválida. Por favor, intenta de nuevo."
-        fi
-    done
-}
 añadir_usuario(){
   read -p "\nNombre de usuario: " user
   read -p "Nombre: " nombre
   read -p "Apellidos: " apellidos
   read -p "Introduce el codigo postal: " postal_code
   read -sp "Contraseña: " password
-  gidNumber=$(mostrar_menu_grupos)
   new_uid=$(calc_uid)
   initials=$(calc_initials "$nombre $apellidos")
   echo "dn: uid=$user,$DN_USERS" > /tmp/user.ldif
@@ -105,7 +71,7 @@ añadir_usuario(){
   echo "givenName: $nombre" >> /tmp/user.ldif
   echo "cn: $nombre $apellidos" >> /tmp/user.ldif
   echo "uidNumber: $new_uid" >> /tmp/user.ldif
-  echo "gidNumber: $gidNumber" >> /tmp/user.ldif
+  echo "gidNumber: " >> /tmp/user.ldif
   echo "userPassword: $password" >> /tmp/user.ldif
   echo "loginShell: /bin/bash" >> /tmp/user.ldif
   echo "homeDirectory: /home/$user" >> /tmp/user.ldif
@@ -147,7 +113,7 @@ añadir_uo(){
   echo "objectClass: organizationalUnit" >> /tmp/uo.ldif
   echo "ou: $nomuo" >> /tmp/uo.ldif
   sudo ldapadd -x -D cn=admin,$BASE_DN -w $BIND_PASSWD -f /tmp/uo.ldif
-  rm -f /tmp/uo.ldiff
+  rm -f /tmp/uo.ldif
   exit
 }
 añadir_objeto
