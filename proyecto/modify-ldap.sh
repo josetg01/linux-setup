@@ -134,8 +134,8 @@ modificar_objeto(){
   read -p "Selecione una opcion [1-2]: " n
 
   case $n in
-    1) añadir_usuario;;
-    2) añadir_grupo;;
+    1) modificar_usuario;;
+    2) modificar_grupo;;
     *) echo "Opción incorrecta";;
   esac
 }
