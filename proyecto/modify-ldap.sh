@@ -19,7 +19,7 @@ menu_inicio(){
     1) añadir_objeto;;
     2) modificar_objeto;;
     3) eliminar_objeto;;
-    *) echo "Opción incorrecta";;
+    *) echo "Opción incorrecta"; menu_inicio;;
   esac
 }
 #Funciones de añadir Objetos
@@ -33,7 +33,7 @@ añadir_objeto(){
     1) añadir_usuario;;
     2) añadir_grupo;;
     3) añadir_uo;;
-    *) echo "Opción incorrecta"; añadir_objeto;
+    *) echo "Opción incorrecta"; añadir_objeto;;
   esac
 }
 calc_uid(){
