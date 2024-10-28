@@ -61,13 +61,22 @@ añadir_usuario(){
   read -p "Nombre de usuario: " user
   read -p "Nombre: " nombre
   read -p "Apellidos: " apellidos
-  read -p "Introduce el codigo postal: " postal_code
+  read -p "Introduce el código postal: " postal_code
   echo "Selecciona un grupo para obtener el gidNumber:"
   listar_grupos
   read -p "Ingresa el gidNumber del grupo: " gidNumber
+
+  # Validar gidNumber
+  if ! ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$DN_GROUPS" "(gidNumber=$gidNumber)" | grep -q "gidNumber: $gidNumber"; then
+    echo "El gidNumber ingresado no existe."
+    return
+  fi
+  
   read -sp "Contraseña: " password
+  
   new_uid=$(calc_uid)
   initials=$(calc_initials "$nombre $apellidos")
+  
   echo "dn: uid=$user,$DN_USERS" > /tmp/user.ldif
   echo "objectClass: inetOrgPerson" >> /tmp/user.ldif
   echo "objectClass: posixAccount" >> /tmp/user.ldif
