@@ -87,7 +87,7 @@ añadir_usuario(){
   echo "    postalCode: $postal_code" >> /tmp/user.ldif
   echo "    o: servidor" >> /tmp/user.ldif
   echo "    initials: $initials" >> /tmp/user.ldif
-  if ! sudo ldapadd -x -D cn=admin,$BASE_DN -w $BIND_PASSWD -f /tmp/user.ldif; then
+  if ! sudo ldapadd -x -D $BIND_DN -w $BIND_PASSWD -f /tmp/user.ldif; then
     echo "Error al añadir el usuario."
   fi
   rm -f /tmp/user.ldif
@@ -112,7 +112,7 @@ añadir_grupo(){
   echo "objectClass: posixGroup" >> /tmp/grupo.ldif
   echo "cn: $nomgroup" >> /tmp/grupo.ldif
   echo "gidNumber: $new_gid" >> /tmp/grupo.ldif
-  sudo ldapadd -x -D cn=admin,$BASE_DN -w $BIND_PASSWD -f /tmp/grupo.ldif
+  sudo ldapadd -x -D $BIND_DN -w $BIND_PASSWD -f /tmp/grupo.ldif
   rm -f /tmp/grupo.ldif
 }
 añadir_uo(){
@@ -120,7 +120,7 @@ añadir_uo(){
   echo "dn: ou=$nomuo,$BASE_DN" > /tmp/uo.ldif
   echo "objectClass: organizationalUnit" >> /tmp/uo.ldif
   echo "ou: $nomuo" >> /tmp/uo.ldif
-  sudo ldapadd -x -D cn=admin,$BASE_DN -w $BIND_PASSWD -f /tmp/uo.ldif
+  sudo ldapadd -x -D $BIND_DN -w $BIND_PASSWD -f /tmp/uo.ldif
   rm -f /tmp/uo.ldif
   exit
 }
