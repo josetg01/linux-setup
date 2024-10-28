@@ -55,7 +55,7 @@ calc_initials(){
 }
 # Función para obtener grupos
 obtener_grupos() {
-    ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PW" -b "$BASE_DN" "(objectClass=posixGroup)" cn gidNumber | \
+    ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$BASE_DN" "(objectClass=posixGroup)" cn gidNumber | \
     awk '/^cn: / {print $2} /^gidNumber: / {print $2}' | \
     paste -d ' ' - - | \
     awk '{print NR, $0}'
