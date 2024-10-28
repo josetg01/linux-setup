@@ -139,4 +139,4 @@ modificar_objeto(){
     *) echo "Opción incorrecta"; modificar_objeto;;
   esac
 }
-añadir_objeto
+menu_inicio
