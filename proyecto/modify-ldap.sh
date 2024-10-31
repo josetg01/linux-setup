@@ -165,7 +165,9 @@ modificar_usuario() {
 
   # Obtener los valores actuales
   current_sn=$(ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$DN_USERS" "$user_dn" sn | grep "^sn: " | awk '{print $2}')
+  sn="$current_sn"
   current_givenName=$(ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$DN_USERS" "$user_dn" givenName | grep "^givenName: " | awk '{print $2}')
+  givenName="$current_givenName"
 
   echo "Introduce los nuevos valores (deja en blanco para no modificar):"
   read -p "Nombre (givenName) [actual: $current_givenName]: " new_givenName
@@ -182,15 +184,17 @@ modificar_usuario() {
     if [ -n "$new_givenName" ]; then
       echo "replace: givenName" >> /tmp/modificar_user.ldif
       echo "$new_givenName" >> /tmp/modificar_user.ldif
+      givenName="$new_givenName"
     fi
 
     if [ -n "$new_sn" ]; then
       echo "replace: sn" >> /tmp/modificar_user.ldif
       echo "$new_sn" >> /tmp/modificar_user.ldif
+      sn="$sn"
     fi
 
     # Modificar cn y gecos si se cambian givenName o sn
-    new_cn="${new_givenName:-$current_givenName} ${new_sn:-$current_sn}"
+    new_cn="$givenName $sn"
     echo "replace: cn" >> /tmp/modificar_user.ldif
     echo "$new_cn" >> /tmp/modificar_user.ldif
     echo "replace: gecos" >> /tmp/modificar_user.ldif
