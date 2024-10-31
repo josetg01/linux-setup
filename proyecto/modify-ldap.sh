@@ -221,5 +221,8 @@ modificar_usuario() {
 
   rm -f /tmp/modificar_user.ldif
 }
+modificar_grupo(){
+  
+}
 
 menu_inicio
