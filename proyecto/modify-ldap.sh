@@ -232,7 +232,7 @@ modificar_usuario() {
 }
 modificar_grupo() {
   echo "Grupos existentes:"
-  ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$DN_GROUPS" "(objectClass=posixGroup)" cn | \
+  ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$DN_GROUPS" "(objectClass=posixGroup)" cn gidNumber | \
     awk '/^cn: /{printf "%s\t", $2} /^gidNumber: /{print $2}' | nl
 
   read -p "Selecciona el número del grupo a modificar: " group_num
@@ -250,42 +250,19 @@ modificar_grupo() {
 
   echo "Introduce los nuevos valores (deja en blanco para no modificar):"
   read -p "Nombre del grupo (cn) [actual: $current_cn]: " new_cn
-  read -p "gidNumber [actual: $current_gidNumber]: " new_gidNumber
+  # Deshabilitar la modificación del gidNumber
+  echo "No se puede modificar el gidNumber. El actual es: $current_gidNumber"
 
   # Crear el archivo LDIF para la modificación
   echo "dn: $group_dn" > /tmp/modificar_grupo.ldif
   echo "changetype: modify" >> /tmp/modificar_grupo.ldif
 
-  # Modificar cn y gidNumber si se proporcionan nuevos valores
+  # Modificar cn si se proporciona un nuevo valor
   if [ -n "$new_cn" ]; then
     # Actualizar el dn si se cambia el cn
     new_group_dn="cn=$new_cn,$DN_GROUPS"
     echo "replace: cn" >> /tmp/modificar_grupo.ldif
     echo "cn: $new_cn" >> /tmp/modificar_grupo.ldif
-  else
-    new_group_dn="$group_dn"
-  fi
-
-  if [ -n "$new_gidNumber" ]; then
-    echo "replace: gidNumber" >> /tmp/modificar_grupo.ldif
-    echo "gidNumber: $new_gidNumber" >> /tmp/modificar_grupo.ldif
-
-    # Actualizar el gidNumber en los usuarios que pertenecen a este grupo
-    usuarios=$(ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$DN_USERS" "(gidNumber=$current_gidNumber)" uid | grep "^uid: " | awk '{print $2}')
-    
-    for usuario in $usuarios; do
-      user_dn="uid=$usuario,$DN_USERS"
-      echo "dn: $user_dn" > /tmp/modificar_user_gid.ldif
-      echo "changetype: modify" >> /tmp/modificar_user_gid.ldif
-      echo "replace: gidNumber" >> /tmp/modificar_user_gid.ldif
-      echo "gidNumber: $new_gidNumber" >> /tmp/modificar_user_gid.ldif
-
-      if ! sudo ldapmodify -x -D "$BIND_DN" -w "$BIND_PASSWD" -f /tmp/modificar_user_gid.ldif; then
-        echo "Error al modificar el gidNumber para el usuario $usuario."
-      else
-        echo "gidNumber para el usuario $usuario modificado con éxito."
-      fi
-    done
   fi
 
   # Ejecutar la modificación del grupo
@@ -293,7 +270,7 @@ modificar_grupo() {
     echo "Error al modificar el grupo."
   else
     echo "Grupo modificado con éxito."
-    
+
     # Si se cambió el cn, también actualizamos el dn
     if [ -n "$new_cn" ]; then
       echo "Renombrando el grupo en LDAP..."
@@ -301,7 +278,7 @@ modificar_grupo() {
     fi
   fi
 
-  rm -f /tmp/modificar_grupo.ldif /tmp/modificar_user_gid.ldif
+  rm -f /tmp/modificar_grupo.ldif
 }
 
 menu_inicio
