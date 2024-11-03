@@ -161,7 +161,7 @@ modificar_objeto(){
 modificar_usuario() {
   echo "Usuarios existentes:"
   ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$DN_USERS" "(objectClass=inetOrgPerson)" uid | \
-    awk '/^uid: /{printf "%s\t", $2} /^cn: /{print $2}' | nl
+    awk '/^uid: /{print $2}' | nl
 
   read -p "Selecciona el número del usuario a modificar: " user_num
   user_dn=$(ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$DN_USERS" "(objectClass=inetOrgPerson)" uid | \
@@ -188,7 +188,7 @@ modificar_usuario() {
   echo "dn: $user_dn" > /tmp/modificar_user.ldif
   echo "changetype: modify" >> /tmp/modificar_user.ldif
 
-   # Modificar givenName y sn si se proporcionan nuevos valores
+  # Modificar givenName y sn si se proporcionan nuevos valores
   if [ -n "$new_givenName" ] || [ -n "$new_sn" ]; then
     if [ -n "$new_givenName" ]; then
       echo "replace: givenName" >> /tmp/modificar_user.ldif
