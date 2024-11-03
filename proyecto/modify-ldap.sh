@@ -188,7 +188,7 @@ modificar_usuario() {
   echo "dn: $user_dn" > /tmp/modificar_user.ldif
   echo "changetype: modify" >> /tmp/modificar_user.ldif
 
-  # Modificar givenName y sn si se proporcionan nuevos valores
+   # Modificar givenName y sn si se proporcionan nuevos valores
   if [ -n "$new_givenName" ] || [ -n "$new_sn" ]; then
     if [ -n "$new_givenName" ]; then
       echo "replace: givenName" >> /tmp/modificar_user.ldif
