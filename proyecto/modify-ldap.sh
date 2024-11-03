@@ -230,52 +230,56 @@ modificar_usuario() {
 
   rm -f /tmp/modificar_user.ldif
 }
-modificar_grupo() {
+modificar_grupo(){
   echo "Grupos existentes:"
-  ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$DN_GROUPS" "(objectClass=posixGroup)" cn gidNumber | \
-    awk '/^cn: /{printf "%s\t", $2} /^gidNumber: /{print $2}' | nl
+  listar_grupos
 
-  read -p "Selecciona el número del grupo a modificar: " group_num
-  group_dn=$(ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$DN_GROUPS" "(objectClass=posixGroup)" cn | \
-    awk -v num="$group_num" '/^cn: /{count++} count==num {print "cn="$2","$1}' | sed "s/^/cn=/" | sed "s/^cn=//")
+  read -p "Ingresa el nombre del grupo a modificar: " old_group_name
+  old_dn="cn=$old_group_name,$DN_GROUPS"
 
-  if [ -z "$group_dn" ]; then
-    echo "Grupo no encontrado."
+  # Verifica si el grupo existe
+  if ! ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$DN_GROUPS" "(cn=$old_group_name)" | grep -q "dn: $old_dn"; then
+    echo "El grupo $old_group_name no existe."
     return
   fi
 
-  # Obtener el gidNumber y cn actual
-  current_gidNumber=$(ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$DN_GROUPS" "$group_dn" gidNumber | grep "^gidNumber: " | awk '{print $2}')
-  current_cn=$(ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$DN_GROUPS" "$group_dn" cn | grep "^cn: " | awk '{print $2}')
+  read -p "Nuevo nombre para el grupo: " new_group_name
 
-  echo "Introduce los nuevos valores (deja en blanco para no modificar):"
-  read -p "Nombre del grupo (cn) [actual: $current_cn]: " new_cn
-  # Deshabilitar la modificación del gidNumber
-  echo "No se puede modificar el gidNumber. El actual es: $current_gidNumber"
+  # Generar archivo LDIF para modificar el DN del grupo (cn y dn)
+  echo "dn: $old_dn" > /tmp/modificar_grupo_dn.ldif
+  echo "changetype: modrdn" >> /tmp/modificar_grupo_dn.ldif
+  echo "newrdn: cn=$new_group_name" >> /tmp/modificar_grupo_dn.ldif
+  echo "deleteoldrdn: 1" >> /tmp/modificar_grupo_dn.ldif
 
-  # Crear el archivo LDIF para la modificación
-  echo "dn: $group_dn" > /tmp/modificar_grupo.ldif
-  echo "changetype: modify" >> /tmp/modificar_grupo.ldif
-
-  # Modificar cn si se proporciona un nuevo valor
-  if [ -n "$new_cn" ]; then
-    # Actualizar el dn si se cambia el cn
-    new_group_dn="cn=$new_cn,$DN_GROUPS"
-    echo "replace: cn" >> /tmp/modificar_grupo.ldif
-    echo "cn: $new_cn" >> /tmp/modificar_grupo.ldif
+  # Ejecutar la modificación del DN
+  if ! sudo ldapmodify -x -D "$BIND_DN" -w "$BIND_PASSWD" -f /tmp/modificar_grupo_dn.ldif; then
+    echo "Error al modificar el DN del grupo."
+    rm -f /tmp/modificar_grupo_dn.ldif
+    return
+  else
+    echo "DN del grupo modificado con éxito."
   fi
 
-  # Ejecutar la modificación del grupo
+  rm -f /tmp/modificar_grupo_dn.ldif
+
+  # Generar archivo LDIF para otras modificaciones (si es necesario)
+  echo "dn: cn=$new_group_name,$DN_GROUPS" > /tmp/modificar_grupo.ldif
+  echo "changetype: modify" >> /tmp/modificar_grupo.ldif
+  # Agrega aquí otras modificaciones necesarias al grupo
+  # echo "replace: description" >> /tmp/modificar_grupo.ldif
+  # echo "Nueva descripción del grupo" >> /tmp/modificar_grupo.ldif
+
+  # Si no hay modificaciones adicionales, elimina el archivo temporal y retorna
+  if [ $(wc -l < /tmp/modificar_grupo.ldif) -le 2 ]; then
+    rm -f /tmp/modificar_grupo.ldif
+    return
+  fi
+
+  # Ejecutar la modificación
   if ! sudo ldapmodify -x -D "$BIND_DN" -w "$BIND_PASSWD" -f /tmp/modificar_grupo.ldif; then
     echo "Error al modificar el grupo."
   else
     echo "Grupo modificado con éxito."
-
-    # Si se cambió el cn, también actualizamos el dn
-    if [ -n "$new_cn" ]; then
-      echo "Renombrando el grupo en LDAP..."
-      sudo ldapmodrdn -x -D "$BIND_DN" -w "$BIND_PASSWD" "$group_dn" "cn=$new_cn"
-    fi
   fi
 
   rm -f /tmp/modificar_grupo.ldif
