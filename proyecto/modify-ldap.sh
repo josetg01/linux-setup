@@ -158,24 +158,20 @@ modificar_objeto(){
   esac
 }
 
-modificar_usuario() {
+listar_usuarios() {
   echo "Usuarios existentes:"
-  ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$DN_USERS" "(objectClass=inetOrgPerson)" uid | \
-    awk '/^uid: /{print $2}' | nl
+  ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$DN_USERS" "(objectClass=posixAccount)" uid uidNumber | \
+    awk '/^uid: /{printf "%s\t", $2} /^uidNumber: /{print $2}'
+}
+modificar_usuario() {
+  listar_usuarios
 
-  read -p "Selecciona el número del usuario a modificar: " user_num
-  user_dn=$(ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$DN_USERS" "(objectClass=inetOrgPerson)" uid | \
-    awk -v num="$user_num" '/^uid: /{count++} count==num {print "uid="$2","$1}' | sed "s/^/uid=/" | sed "s/^uid=//")
-
-  if [ -z "$user_dn" ]; then
-    echo "Usuario no encontrado."
-    return
-  fi
+  read -p "Selecciona el usuario a modificar: " username_modify
 
   # Obtener los valores actuales
-  current_sn=$(ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$DN_USERS" "$user_dn" sn | grep "^sn: " | awk '{print $2}')
+  current_sn=$(ldapsearch -x -LLL -D "$BIND_DN" -b "$DN_USERS" -w "$BIND_PASSWD" "(uid=$username_modify)" sn | grep "^sn: " | awk '{print $2}')
   sn="$current_sn"
-  current_givenName=$(ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$DN_USERS" "$user_dn" givenName | grep "^givenName: " | awk '{print $2}')
+  current_givenName=$(ldapsearch -x -LLL -D "$BIND_DN" -b "$DN_USERS" -w "$BIND_PASSWD" "(uid=$username_modify)" givenName | grep "^givenName: " | awk '{print $2}')
   givenName="$current_givenName"
 
   echo "Introduce los nuevos valores (deja en blanco para no modificar):"
