@@ -217,52 +217,68 @@ modificar_usuario() {
   new_cn="$new_givenName $new_sn"
   new_gecos="$new_givenName $new_sn"
 
-  # Escapar los espacios en los valores
-  new_givenName=$(echo "$new_givenName" | sed 's/ /\\ /g')
-  new_sn=$(echo "$new_sn" | sed 's/ /\\ /g')
-  new_cn=$(echo "$new_cn" | sed 's/ /\\ /g')
-  new_gecos=$(echo "$new_gecos" | sed 's/ /\\ /g')
-
-  # Crear el archivo LDIF para la modificación
-  echo "dn: $user_dn" > /tmp/modificar_user.ldif
-  echo "changetype: modify" >> /tmp/modificar_user.ldif
-
-  # Realizar las modificaciones de los atributos en una sola línea de replace
-  echo "replace: givenName" >> /tmp/modificar_user.ldif
-  echo "givenName: $new_givenName" >> /tmp/modificar_user.ldif
-  echo "replace: sn" >> /tmp/modificar_user.ldif
-  echo "sn: $new_sn" >> /tmp/modificar_user.ldif
-  echo "replace: cn" >> /tmp/modificar_user.ldif
-  echo "cn: $new_cn" >> /tmp/modificar_user.ldif
-  echo "replace: gecos" >> /tmp/modificar_user.ldif
-  echo "gecos: $new_gecos" >> /tmp/modificar_user.ldif
-
-  # Modificar otros campos si se proporcionan nuevos valores
-  if [ -n "$new_mail" ]; then
-    echo "replace: mail" >> /tmp/modificar_user.ldif
-    echo "mail: $new_mail" >> /tmp/modificar_user.ldif
+  # Crear el archivo LDIF para modificar 'givenName' si es necesario
+  if [ "$new_givenName" != "$givenName" ]; then
+    echo "dn: $user_dn" > /tmp/modificar_givenName.ldif
+    echo "changetype: modify" >> /tmp/modificar_givenName.ldif
+    echo "replace: givenName" >> /tmp/modificar_givenName.ldif
+    echo "givenName: $new_givenName" >> /tmp/modificar_givenName.ldif
+    ldapmodify -x -D "$BIND_DN" -w "$BIND_PASSWD" -f /tmp/modificar_givenName.ldif
+    rm -f /tmp/modificar_givenName.ldif
   fi
 
-  if [ -n "$new_postalCode" ]; then
-    echo "replace: postalCode" >> /tmp/modificar_user.ldif
-    echo "postalCode: $new_postalCode" >> /tmp/modificar_user.ldif
+  # Crear el archivo LDIF para modificar 'sn' si es necesario
+  if [ "$new_sn" != "$sn" ]; then
+    echo "dn: $user_dn" > /tmp/modificar_sn.ldif
+    echo "changetype: modify" >> /tmp/modificar_sn.ldif
+    echo "replace: sn" >> /tmp/modificar_sn.ldif
+    echo "sn: $new_sn" >> /tmp/modificar_sn.ldif
+    ldapmodify -x -D "$BIND_DN" -w "$BIND_PASSWD" -f /tmp/modificar_sn.ldif
+    rm -f /tmp/modificar_sn.ldif
   fi
 
-  # Verificar el contenido del archivo LDIF antes de modificar
-  echo "Contenido del archivo LDIF:"
-  cat /tmp/modificar_user.ldif
-
-  # Ejecutar la modificación en LDAP
-  if ! sudo ldapmodify -x -D "$BIND_DN" -w "$BIND_PASSWD" -f /tmp/modificar_user.ldif; then
-    echo "Error al modificar el usuario."
-  else
-    echo "Usuario modificado con éxito."
+  # Crear el archivo LDIF para modificar 'cn' si es necesario
+  if [ "$new_cn" != "$givenName $sn" ]; then
+    echo "dn: $user_dn" > /tmp/modificar_cn.ldif
+    echo "changetype: modify" >> /tmp/modificar_cn.ldif
+    echo "replace: cn" >> /tmp/modificar_cn.ldif
+    echo "cn: $new_cn" >> /tmp/modificar_cn.ldif
+    ldapmodify -x -D "$BIND_DN" -w "$BIND_PASSWD" -f /tmp/modificar_cn.ldif
+    rm -f /tmp/modificar_cn.ldif
   fi
 
-  # Limpiar el archivo LDIF
-  rm -f /tmp/modificar_user.ldif
+  # Crear el archivo LDIF para modificar 'gecos' si es necesario
+  if [ "$new_gecos" != "$givenName $sn" ]; then
+    echo "dn: $user_dn" > /tmp/modificar_gecos.ldif
+    echo "changetype: modify" >> /tmp/modificar_gecos.ldif
+    echo "replace: gecos" >> /tmp/modificar_gecos.ldif
+    echo "gecos: $new_gecos" >> /tmp/modificar_gecos.ldif
+    ldapmodify -x -D "$BIND_DN" -w "$BIND_PASSWD" -f /tmp/modificar_gecos.ldif
+    rm -f /tmp/modificar_gecos.ldif
+  fi
+
+  # Crear el archivo LDIF para modificar 'mail' si es necesario
+  if [ "$new_mail" != "$current_mail" ]; then
+    echo "dn: $user_dn" > /tmp/modificar_mail.ldif
+    echo "changetype: modify" >> /tmp/modificar_mail.ldif
+    echo "replace: mail" >> /tmp/modificar_mail.ldif
+    echo "mail: $new_mail" >> /tmp/modificar_mail.ldif
+    ldapmodify -x -D "$BIND_DN" -w "$BIND_PASSWD" -f /tmp/modificar_mail.ldif
+    rm -f /tmp/modificar_mail.ldif
+  fi
+
+  # Crear el archivo LDIF para modificar 'postalCode' si es necesario
+  if [ "$new_postalCode" != "$current_postalCode" ]; then
+    echo "dn: $user_dn" > /tmp/modificar_postalCode.ldif
+    echo "changetype: modify" >> /tmp/modificar_postalCode.ldif
+    echo "replace: postalCode" >> /tmp/modificar_postalCode.ldif
+    echo "postalCode: $new_postalCode" >> /tmp/modificar_postalCode.ldif
+    ldapmodify -x -D "$BIND_DN" -w "$BIND_PASSWD" -f /tmp/modificar_postalCode.ldif
+    rm -f /tmp/modificar_postalCode.ldif
+  fi
+
+  echo "Usuario modificado con éxito."
 }
-
 
 modificar_grupo(){
   echo "Grupos existentes:"
