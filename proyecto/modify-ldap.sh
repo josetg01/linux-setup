@@ -199,31 +199,43 @@ modificar_usuario() {
   read -p "Correo (mail) [actual: $current_mail]: " new_mail
   read -p "Código Postal (postalCode) [actual: $current_postalCode]: " new_postalCode
 
+  # Si los valores son vacíos, mantener los actuales
+  if [ -z "$new_givenName" ]; then
+    new_givenName="$givenName"
+  fi
+  if [ -z "$new_sn" ]; then
+    new_sn="$sn"
+  fi
+  if [ -z "$new_mail" ]; then
+    new_mail="$current_mail"
+  fi
+  if [ -z "$new_postalCode" ]; then
+    new_postalCode="$current_postalCode"
+  fi
+
+  # Construir el valor de 'cn' y 'gecos'
+  new_cn="$new_givenName $new_sn"
+  new_gecos="$new_givenName $new_sn"
+
+  # Escapar los espacios en los valores
+  new_givenName=$(echo "$new_givenName" | sed 's/ /\\ /g')
+  new_sn=$(echo "$new_sn" | sed 's/ /\\ /g')
+  new_cn=$(echo "$new_cn" | sed 's/ /\\ /g')
+  new_gecos=$(echo "$new_gecos" | sed 's/ /\\ /g')
+
   # Crear el archivo LDIF para la modificación
   echo "dn: $user_dn" > /tmp/modificar_user.ldif
   echo "changetype: modify" >> /tmp/modificar_user.ldif
 
-  # Modificar givenName y sn si se proporcionan nuevos valores
-  if [ -n "$new_givenName" ] || [ -n "$new_sn" ]; then
-    if [ -n "$new_givenName" ]; then
-      echo "replace: givenName" >> /tmp/modificar_user.ldif
-      echo "givenName: $new_givenName" >> /tmp/modificar_user.ldif
-      givenName="$new_givenName"
-    fi
-
-    if [ -n "$new_sn" ]; then
-      echo "replace: sn" >> /tmp/modificar_user.ldif
-      echo "sn: $new_sn" >> /tmp/modificar_user.ldif
-      sn="$new_sn"
-    fi
-
-    # Modificar cn y gecos si se cambian givenName o sn
-    new_cn="$givenName $sn"
-    echo "replace: cn" >> /tmp/modificar_user.ldif
-    echo "cn: $new_cn" >> /tmp/modificar_user.ldif
-    echo "replace: gecos" >> /tmp/modificar_user.ldif
-    echo "gecos: $new_cn" >> /tmp/modificar_user.ldif
-  fi
+  # Realizar las modificaciones de los atributos en una sola línea de replace
+  echo "replace: givenName" >> /tmp/modificar_user.ldif
+  echo "givenName: $new_givenName" >> /tmp/modificar_user.ldif
+  echo "replace: sn" >> /tmp/modificar_user.ldif
+  echo "sn: $new_sn" >> /tmp/modificar_user.ldif
+  echo "replace: cn" >> /tmp/modificar_user.ldif
+  echo "cn: $new_cn" >> /tmp/modificar_user.ldif
+  echo "replace: gecos" >> /tmp/modificar_user.ldif
+  echo "gecos: $new_gecos" >> /tmp/modificar_user.ldif
 
   # Modificar otros campos si se proporcionan nuevos valores
   if [ -n "$new_mail" ]; then
@@ -250,6 +262,7 @@ modificar_usuario() {
   # Limpiar el archivo LDIF
   rm -f /tmp/modificar_user.ldif
 }
+
 
 modificar_grupo(){
   echo "Grupos existentes:"
