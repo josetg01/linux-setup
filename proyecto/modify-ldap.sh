@@ -335,4 +335,5 @@ modificar_grupo(){
   rm -f /tmp/modificar_grupo.ldif
 }
 
+
 menu_inicio
