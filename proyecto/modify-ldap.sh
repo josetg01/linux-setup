@@ -163,77 +163,7 @@ listar_usuarios() {
   ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$DN_USERS" "(objectClass=posixAccount)" uid uidNumber | \
     awk '/^uid: /{printf "%s\t", $2} /^uidNumber: /{print $2}'
 }
-modificar_usuario() {
-  # Listar usuarios y pedir la selección
-  listar_usuarios
-  read -p "Selecciona el usuario a modificar: " username_modify
-  if [ -z "$username_modify" ]; then
-    echo "El nombre de usuario no puede estar vacío."
-    return 1
-  fi
-  # Obtener DN del usuario
-  user_dn=$(ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$DN_USERS" "(uid=$username_modify)" dn | awk '/^dn: /{print $2}')
-  if [ -z "$user_dn" ]; then
-    echo "Usuario no encontrado en LDAP."
-    return 1
-  fi
-  # Obtener los valores actuales del usuario de una sola consulta
-  user_info=$(ldapsearch -x -LLL -D "$BIND_DN" -w "$BIND_PASSWD" -b "$DN_USERS" "(uid=$username_modify)" sn givenName mail postalCode) 
-  # Extraer los valores actuales
-  current_sn=$(echo "$user_info" | grep "^sn: " | awk '{print $2}')
-  current_givenName=$(echo "$user_info" | grep "^givenName: " | awk '{print $2}')
-  current_mail=$(echo "$user_info" | grep "^mail: " | awk '{print $2}')
-  current_postalCode=$(echo "$user_info" | grep "^postalCode: " | awk '{print $2}')
-  echo "Introduce los nuevos valores (deja en blanco para no modificar):"
-  # Pedir los nuevos valores al usuario
-  read -p "Nombre (givenName) [actual: $current_givenName]: " new_givenName
-  read -p "Apellidos (sn) [actual: $current_sn]: " new_sn
-  read -p "Correo (mail) [actual: $current_mail]: " new_mail
-  read -p "Código Postal (postalCode) [actual: $current_postalCode]: " new_postalCode
-  # Crear el archivo LDIF para la modificación
-  echo "dn: $user_dn" > /tmp/modificar_user.ldif
-  echo "changetype: modify" >> /tmp/modificar_user.ldif
-  # Modificar givenName y sn si se proporcionan nuevos valores
-  if [ -n "$new_givenName" ] || [ -n "$new_sn" ]; then
-    if [ -n "$new_givenName" ]; then
-      echo "replace: givenName" >> /tmp/modificar_user.ldif
-      echo "givenName: $new_givenName" >> /tmp/modificar_user.ldif
-      givenName="$new_givenName"
-    else
-      givenName="$current_givenName"
-    fi
-    if [ -n "$new_sn" ]; then
-      echo "replace: sn" >> /tmp/modificar_user.ldif
-      echo "sn: $new_sn" >> /tmp/modificar_user.ldif
-      sn="$new_sn"
-    else
-      sn="$current_sn"
-    fi
-    # Modificar cn y gecos si se cambian givenName o sn
-    new_cn="$givenName $sn"
-    echo "replace: cn" >> /tmp/modificar_user.ldif
-    echo "cn: $new_cn" >> /tmp/modificar_user.ldif
-    echo "replace: gecos" >> /tmp/modificar_user.ldif
-    echo "gecos: $new_cn" >> /tmp/modificar_user.ldif
-  fi
-  # Modificar otros campos si se proporcionan nuevos valores
-  if [ -n "$new_mail" ]; then
-    echo "replace: mail" >> /tmp/modificar_user.ldif
-    echo "mail: $new_mail" >> /tmp/modificar_user.ldif
-  fi
-  if [ -n "$new_postalCode" ]; then
-    echo "replace: postalCode" >> /tmp/modificar_user.ldif
-    echo "postalCode: $new_postalCode" >> /tmp/modificar_user.ldif
-  fi
-  # Ejecutar la modificación en LDAP
-  if ! sudo ldapmodify -x -D "$BIND_DN" -w "$BIND_PASSWD" -f /tmp/modificar_user.ldif; then
-    echo "Error al modificar el usuario."
-  else
-    echo "Usuario modificado con éxito."
-  fi
-  # Limpiar el archivo LDIF
-  rm -f /tmp/modificar_user.ldif
-}
+jtorregros
 modificar_grupo(){
   echo "Grupos existentes:"
   listar_grupos
