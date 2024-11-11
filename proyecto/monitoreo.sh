@@ -13,7 +13,9 @@ echo "----- Espacio en Disco -----" >> $LOG_FILE
 df -h | grep -E '^/dev' | while read line; do
     partition=$(echo $line | awk '{print $1}')
     available=$(echo $line | awk '{print $4}')
-    if [[ "${available%?}" -lt 10 ]]; then
+    used=$(echo $line | awk '{print $5}')
+    # if [[ "${available%?}" -lt 10 ]]; then
+    if [[ "$used" -gt 90% ]]; then
         echo "ALERTA: La partición $partition tiene menos de 10% de espacio libre." >> $LOG_FILE
     fi
 done
